@@ -6,6 +6,7 @@ import { GeneralSettings } from "../../components/admin/GeneralSettings";
 import { SocialMediaSettings } from "../../components/admin/SocialMediaSettings";
 import { ContactSettings } from "../../components/admin/ContactSettings";
 import { SEOSettings } from "../../components/admin/SEOSettings";
+import { SettingsTest } from "../../components/SettingsTest";
 
 const AdminSettings = () => {
   return (
@@ -20,7 +21,7 @@ const AdminSettings = () => {
       </div>
 
       <Tabs defaultValue="general" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="general" className="flex items-center gap-2">
             <Settings className="h-4 w-4" />
             General
@@ -36,6 +37,10 @@ const AdminSettings = () => {
           <TabsTrigger value="seo" className="flex items-center gap-2">
             <Search className="h-4 w-4" />
             SEO
+          </TabsTrigger>
+          <TabsTrigger value="test" className="flex items-center gap-2">
+            <Globe className="h-4 w-4" />
+            API Test
           </TabsTrigger>
         </TabsList>
 
@@ -53,6 +58,10 @@ const AdminSettings = () => {
 
         <TabsContent value="seo" className="space-y-6">
           <SEOSettings />
+        </TabsContent>
+
+        <TabsContent value="test" className="space-y-6">
+          <SettingsTest />
         </TabsContent>
       </Tabs>
     </div>

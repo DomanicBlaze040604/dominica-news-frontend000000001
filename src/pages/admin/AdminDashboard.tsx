@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { articlesService } from '../../services/articles';
 import { categoriesService } from '../../services/categories';
 import { imagesService } from '../../services/images';
+import { TestConnection } from '../../components/TestConnection';
 import { FileText, FolderOpen, Image, TrendingUp } from 'lucide-react';
 
 export const AdminDashboard: React.FC = () => {
@@ -153,6 +154,11 @@ export const AdminDashboard: React.FC = () => {
             </div>
           </CardContent>
         </Card>
+      </div>
+
+      {/* Backend Connection Test */}
+      <div className="mt-8">
+        <TestConnection />
       </div>
     </div>
   );

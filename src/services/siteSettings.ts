@@ -1,4 +1,5 @@
 import { ApiResponse } from '../types/api';
+import { api } from './api';
 
 export interface SiteSetting {
   _id: string;
@@ -43,113 +44,50 @@ export interface GeneralSettings {
 }
 
 class SiteSettingsService {
-  private baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
-
   async getSetting(key: string): Promise<ApiResponse<SiteSetting>> {
-    const response = await fetch(`${this.baseUrl}/settings/${key}`);
-    return response.json();
+    const response = await api.get(`/settings/${key}`);
+    return response.data;
   }
 
   async getAllSettings(): Promise<ApiResponse<SiteSettingsResponse>> {
-    const token = localStorage.getItem('token');
-    const response = await fetch(`${this.baseUrl}/admin/settings`, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-    });
-    return response.json();
+    const response = await api.get('/settings');
+    return response.data;
   }
 
   async updateSetting(key: string, value: string, description?: string): Promise<ApiResponse<SiteSetting>> {
-    const token = localStorage.getItem('token');
-    const response = await fetch(`${this.baseUrl}/admin/settings/${key}`, {
-      method: 'PUT',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ value, description }),
-    });
-    return response.json();
+    const response = await api.put('/settings', { key, value, description });
+    return response.data;
   }
 
   async deleteSetting(key: string): Promise<ApiResponse<null>> {
-    const token = localStorage.getItem('token');
-    const response = await fetch(`${this.baseUrl}/admin/settings/${key}`, {
-      method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-    });
-    return response.json();
+    const response = await api.delete(`/settings/${key}`);
+    return response.data;
   }
 
   // Specialized methods for different setting types
   async updateSocialMediaSettings(settings: SocialMediaSettings): Promise<ApiResponse<SiteSetting[]>> {
-    const token = localStorage.getItem('token');
-    const response = await fetch(`${this.baseUrl}/admin/settings/social-media`, {
-      method: 'PUT',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(settings),
-    });
-    return response.json();
+    const response = await api.put('/settings/social-media', settings);
+    return response.data;
   }
 
   async updateContactInfo(info: ContactInfo): Promise<ApiResponse<SiteSetting[]>> {
-    const token = localStorage.getItem('token');
-    const response = await fetch(`${this.baseUrl}/admin/settings/contact`, {
-      method: 'PUT',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(info),
-    });
-    return response.json();
+    const response = await api.put('/settings/contact', info);
+    return response.data;
   }
 
   async updateSEOSettings(settings: SEOSettings): Promise<ApiResponse<SiteSetting[]>> {
-    const token = localStorage.getItem('token');
-    const response = await fetch(`${this.baseUrl}/admin/settings/seo`, {
-      method: 'PUT',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(settings),
-    });
-    return response.json();
+    const response = await api.put('/settings/seo', settings);
+    return response.data;
   }
 
   async updateGeneralSettings(settings: GeneralSettings): Promise<ApiResponse<SiteSetting[]>> {
-    const token = localStorage.getItem('token');
-    const response = await fetch(`${this.baseUrl}/admin/settings/general`, {
-      method: 'PUT',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(settings),
-    });
-    return response.json();
+    const response = await api.put('/settings/general', settings);
+    return response.data;
   }
 
   async toggleMaintenanceMode(enabled: boolean): Promise<ApiResponse<SiteSetting>> {
-    const token = localStorage.getItem('token');
-    const response = await fetch(`${this.baseUrl}/admin/settings/maintenance`, {
-      method: 'PUT',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ enabled }),
-    });
-    return response.json();
+    const response = await api.put('/settings/maintenance', { enabled });
+    return response.data;
   }
 }
 

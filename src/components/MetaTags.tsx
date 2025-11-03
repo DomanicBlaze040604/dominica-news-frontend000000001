@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { SEO_CONFIG, getCategorySEO, getHomepageSEO } from '../utils/seoConfig';
+import { useDynamicSEO, useDynamicHomepageSEO, useDynamicCategorySEO } from '../hooks/useDynamicSEO';
 
 interface MetaTagsProps {
   title?: string;
@@ -26,19 +26,23 @@ export const MetaTags: React.FC<MetaTagsProps> = ({
   category,
   categorySlug
 }) => {
+  const seoConfig = useDynamicSEO();
+  const homepageSEO = useDynamicHomepageSEO();
+  const categorySEO = useDynamicCategorySEO(categorySlug || '', category || '');
+
   useEffect(() => {
     // Determine SEO data based on page type
     let seoData;
     
     if (categorySlug && category) {
-      seoData = getCategorySEO(categorySlug, category);
+      seoData = categorySEO;
     } else if (!title && !description) {
-      seoData = getHomepageSEO();
+      seoData = homepageSEO;
     } else {
       const canonicalUrl = canonical || window.location.href;
       seoData = {
-        title: title || SEO_CONFIG.site.name,
-        description: description || SEO_CONFIG.site.description,
+        title: title || seoConfig.site.name,
+        description: description || seoConfig.site.description,
         keywords: keywords || '',
         canonical: canonicalUrl
       };
@@ -72,10 +76,10 @@ export const MetaTags: React.FC<MetaTagsProps> = ({
     updateMetaTag('googlebot', 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1');
     
     // Language and locale
-    updateMetaTag('language', SEO_CONFIG.site.language);
+    updateMetaTag('language', seoConfig.site.language);
     
     // Open Graph tags
-    const ogImage = image || SEO_CONFIG.site.defaultImage;
+    const ogImage = image || seoConfig.site.defaultImage;
     const ogUrl = seoData.canonical || window.location.href;
     
     updateMetaTag('og:title', seoData.title, true);
@@ -83,12 +87,12 @@ export const MetaTags: React.FC<MetaTagsProps> = ({
     updateMetaTag('og:url', ogUrl, true);
     updateMetaTag('og:type', type, true);
     updateMetaTag('og:image', ogImage, true);
-    updateMetaTag('og:site_name', SEO_CONFIG.site.name, true);
-    updateMetaTag('og:locale', SEO_CONFIG.site.locale, true);
+    updateMetaTag('og:site_name', seoConfig.site.name, true);
+    updateMetaTag('og:locale', seoConfig.site.locale, true);
     
     // Twitter tags
-    updateMetaTag('twitter:card', SEO_CONFIG.social.twitter.cardType);
-    updateMetaTag('twitter:site', SEO_CONFIG.social.twitter.site);
+    updateMetaTag('twitter:card', seoConfig.social.twitter.cardType);
+    updateMetaTag('twitter:site', seoConfig.social.twitter.site);
     updateMetaTag('twitter:title', seoData.title);
     updateMetaTag('twitter:description', seoData.description);
     updateMetaTag('twitter:image', ogImage);
@@ -96,7 +100,7 @@ export const MetaTags: React.FC<MetaTagsProps> = ({
     // News-specific meta tags
     if (type === 'article' || categorySlug) {
       updateMetaTag('news_keywords', typeof seoData.keywords === 'string' ? seoData.keywords : seoData.keywords.slice(0, 10).join(', '));
-      updateMetaTag('article:publisher', SEO_CONFIG.site.facebookPage, true);
+      updateMetaTag('article:publisher', seoConfig.site.facebookPage, true);
     }
     
     // Canonical link
@@ -119,11 +123,11 @@ export const MetaTags: React.FC<MetaTagsProps> = ({
       const script = document.createElement('script');
       script.type = 'application/ld+json';
       script.setAttribute('data-type', 'website');
-      script.textContent = JSON.stringify(SEO_CONFIG.structuredData.website, null, 2);
+      script.textContent = JSON.stringify(seoConfig.structuredData.website, null, 2);
       document.head.appendChild(script);
     }
 
-  }, [title, description, keywords, canonical, image, type, category, categorySlug]);
+  }, [title, description, keywords, canonical, image, type, category, categorySlug, seoConfig, homepageSEO, categorySEO]);
 
   // This component doesn't render anything visible
   return null;
